@@ -1,0 +1,299 @@
+import React, { Component, PureComponent } from 'react';
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView  } from 'react-native';
+import MasonryList from '@appandflow/masonry-list';
+
+var productImages   = ['https://i.imgur.com/TmY2FJT.png','https://i.imgur.com/hKtkAYx.png', 'https://i.imgur.com/la3B41D.png', 'https://i.imgur.com/W6tWAyi.png', 'https://i.imgur.com/hKtkAYx.png', 'https://i.imgur.com/la3B41D.png', 'https://i.imgur.com/W6tWAyi.png'];
+var productName     = ['','New York Mustard T-Shirt Cotton', 'T-Shirt Peace Skeleton', 'T-Shirt Peace Skeleton Cut Top Woman', 'New York Mustard T-Shirt Cotton', 'T-Shirt Peace Skeleton', 'T-Shirt Peace Skeleton Cut Top Woman'];
+var productDisc     = 90;
+var productHeight   = 800;
+var productDefPrice = [200, 120, 90];
+var productPrice    = ( productDefPrice * ( productDisc / 100 ));
+
+const DATA = Array.from({length : productName.length}).map( ( _,i ) => ({
+
+    id          : `${i}`,
+    image       : productImages[ i % productImages.length],
+    height      : productHeight * productImages.length,
+    name        : productName[ i % productName.length],
+    disc        : productDisc,
+    defPrice    : productDefPrice[ i % productDefPrice.length],
+    price       : productDefPrice[ i % productDefPrice.length] - ( productDefPrice[ i % productDefPrice.length] * ( productDisc / 100 ))
+}));
+
+export class Content extends PureComponent {
+
+  render() {
+
+    const { item } = this.props;
+
+    return (
+      <View style={styles.contentContainer}>
+        <View style={[item.id[0] == 0 && styles.coverContentContainer, item.id[0] != 0 && {display: 'none'}]}>
+            <Image source={{uri: (item.image)}} style={styles.coverImageContent}/>
+            <View style={styles.coverTextMoreContainerTop}/>
+            <View style={styles.coverTextMoreContainer}>
+                <TouchableOpacity activeOpacity={0.1} style={styles.moreCoverView}>
+                    <Image source={{uri:'https://i.imgur.com/KWspjuL.png'}} style={styles.moreCoverImage} />
+                </TouchableOpacity>
+                <View style={styles.textCoverContainerView}>
+                    <Text style={styles.textBigCover}>90% Disc </Text>
+                    <Text style={styles.textSmallCover}>Grand Opening </Text>
+                    <Text style={styles.textBigCover}>Remap </Text>
+                    <Text style={styles.textSmallCover}>Official Store </Text>
+                </View>
+            </View>
+        </View>
+        <View style={[item.id[0] == 0 && {display: 'none'}, styles.content , {maxHeight: item.height}]}>
+            <Image source={{uri: (item.image)}} style={styles.imageContent}/>
+            <View style={styles.textContentContainer}>
+                <View style={styles.discContainer}>
+                    <Text style={styles.textDisc}>{item.disc}% Disc</Text>
+                </View>
+                <Text style={styles.textContent}>{item.name}</Text>
+                <View style={styles.priceContent}>
+                    <View style={styles.textPriceContainer}>
+                        <Text style={styles.textIDR}>IDR  </Text>
+                        <Text style={styles.textPrice}>{item.price}K</Text>
+                        <Text style={styles.textDefPrice}>{item.defPrice}K</Text>
+                    </View>
+                    <TouchableOpacity on activeOpacity={0.1} style={styles.moreView}>
+                        <Image source={{uri:'https://i.imgur.com/KWspjuL.png'}} style={styles.iconHeaderContent} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+      </View>
+    );
+  }
+}
+
+export default class ofisPosts extends Component {
+
+    static navigationOptions = {
+
+        header : null
+    }
+  render() {
+    return (
+        <View>
+            <View style={styles.container}>
+
+                {/* Header Content Container */}
+
+                <View style={styles.headerContentContainer}>
+                    <View style={styles.leftHeaderContent}>
+                        <Text style={styles.textHeaderContent}>General</Text>
+                        <Image source={{uri:'https://i.imgur.com/ZZvk04L.png'}}  style={[styles.iconHeaderContent, {alignSelf: 'center'}]}/>
+                    </View>
+                    <View style={styles.rightHeaderContent}>
+                        <Image source={{uri:'https://i.imgur.com/j5mUI8S.png'}} style={styles.iconHeaderContent}/>
+                    </View>
+                </View>
+            </View>
+            <MasonryList
+                contentContainerStyle   = {{backgroundColor: '#DADFE8',paddingHorizontal: 5}}
+                data                    = {DATA}
+                renderItem              = { ({ item }) => <Content item={item}/>}
+                getHeightForItem        = { ({ item }) => item.height}
+                numColumns              = {2}
+                keyExtractor            = {item => item.id}
+            >
+            </MasonryList>
+        </View>
+    );
+  }
+}
+
+
+var D         = Dimensions.get("screen");
+var styles  = StyleSheet.create({  
+
+    container : {
+        backgroundColor             : '#DADFE8',
+        paddingHorizontal           : 15,
+    },
+    headerContentContainer : {
+        flexDirection               : 'row',
+        justifyContent              : 'space-between',
+        paddingVertical             : 10,
+        paddingHorizontal           : 20,
+        alignItems                  : 'center',
+    },
+    leftHeaderContent : {        
+        flex                        : 1,
+        flexDirection               : 'row',
+        justifyContent              : 'flex-start',
+    },
+    rightHeaderContent : {        
+        flex                        : 1,
+        justifyContent              : 'center',
+        alignItems                  : 'flex-end',
+    },
+    iconHeaderContent : {
+        width                       : 25,
+        height                      : 25,
+        tintColor                   : '#484949',
+    },
+    textHeaderContent : {
+        marginRight                 : 15,
+        fontFamily                  : 'Poppins-Bold',
+        fontSize                    : 25,
+        color                       : '#484949'
+    },
+    contentContainer : {
+        flex                        : 1,
+        padding                     : 15,
+        backgroundColor             : '#DADFE8',
+        flexDirection               : 'column',
+    },
+    content : {
+        maxWidth                    : Math.round(D.width * 1 / 2.25),
+        padding                     : 10,
+        backgroundColor             : 'white',
+        borderRadius                : 15,
+        alignSelf                   : 'center',
+    },
+    coverContentContainer : {
+        display                     : 'flex',
+        maxWidth                    : Math.round(D.width * 1 / 2.25),
+        alignSelf                   : 'center',
+    },
+    coverContent : {
+        position                    : 'absolute',
+    },
+    coverTextMoreContainer : {
+        width                       : Math.round(D.width * 1 / 2.25),
+        height                      : Math.round(D.width * 1 / 2.25),
+        borderRadius                : 15,
+    },
+    coverTextMoreContainerTop : {
+        width                       : Math.round(D.width * 1 / 2.25),
+        height                      : Math.round(D.width * 1 / 2.25),
+        borderRadius                : 15,
+        backgroundColor             : 'black',
+        opacity                     : 0.6,
+        position                    : 'absolute',
+        alignSelf                   : 'center',
+    },
+    coverImageContent : {
+        width                       : Math.round(D.width * 1 / 2.25),
+        height                      : Math.round(D.width * 1 / 2.25),
+        position                    : 'absolute',
+        borderRadius                : 15,
+        alignSelf                   : 'center',
+    },
+    imageContent : {        
+        width                       : Math.round(D.width * 1 / 2.45),
+        height                      : Math.round(D.width * 1 / 2.45),
+        alignSelf                   : 'center',
+        borderRadius                : 15,
+        marginBottom                : - 75,
+    },
+    textContentContainer : {
+        backgroundColor             : 'transparent',
+        maxWidth                    : Math.round(D.width * 1 / 2.6),
+    },
+    textContent : {
+        fontFamily                  : 'Poppins-Regular',
+        color                       : '#484949',
+        fontSize                    : 14,
+        textAlign                   : 'left',
+        marginBottom                : 10,
+    },
+    discContainer : {
+        width                       : 65,
+        height                      : 65,
+        borderRadius                : 25,
+        marginLeft                  : 10,
+        marginBottom                : 20,
+        backgroundColor             : '#FCB347',
+        alignSelf                   : 'flex-start',
+        alignItems                  : 'center',
+        justifyContent              : 'center',
+    },
+    textDisc : {
+        fontFamily                  : 'Poppins-SemiBold',
+        fontSize                    : 14,
+        color                       : 'white',
+        textAlign                   : 'center',
+        alignSelf                   : 'center',
+        maxWidth                    : 55,
+        maxHeight                   : 55,
+    },
+    priceContent : {
+        justifyContent              : 'space-between',
+        flexDirection               : 'row',
+        paddingRight                : 5,
+    },
+    textIDR : {
+        fontFamily                  : 'Poppins-Regular',
+        color                       : '#484949',
+        fontSize                    : 14,
+        marginRight                 : 5,
+        alignSelf                   : 'flex-end',
+    },
+    textPrice : {
+        fontFamily                  : 'Poppins-Bold',
+        color                       : '#E44557',
+        fontSize                    : 15,
+        marginRight                 : 10,
+        alignSelf                   : 'flex-end',
+
+    },
+    textDefPrice : {        
+        fontFamily                  : 'Poppins-Regular',
+        color                       : '#484949',
+        fontSize                    : 14,
+        textDecorationLine          : 'line-through',
+        alignSelf                   : 'flex-end',
+    },
+    textPriceContainer : {
+        flexDirection               : 'row',
+        justifyContent              : 'flex-end',
+    },
+    textBigCover : {
+        fontFamily                  : 'Poppins-Bold',
+        fontSize                    : 24,
+        color                       : 'white',
+        textAlign                   : 'center',
+        maxHeight                   : 34,
+        
+    },
+    textSmallCover : {
+        fontFamily                  : 'Poppins-Bold',
+        fontSize                    : 16,
+        color                       : 'white',
+        textAlign                   : 'center',
+        maxHeight                   : 26,
+    },
+    textCoverContainerView : {
+        flex                        : 1,
+        justifyContent              : 'center',
+        alignItems                  : 'center',
+    },
+    textCoverContainer : {
+        justifyContent              : 'flex-start',
+        alignItems                  : 'center',
+        maxWidth                    : Math.round( D.width * 1 / 4 ),
+    },
+    moreCoverView : {
+        paddingHorizontal           : 10,
+        backgroundColor             : 'black',
+        borderRadius                : 15,
+        alignSelf                   : 'flex-end',
+        opacity                     : 0.7,
+        position                    : 'absolute',
+    },
+    moreCoverImage : {
+        tintColor                   : 'white',
+        width                       : 25,
+        height                      : 25,
+    },
+    contentContainerStyle : {
+        padding                     : 10,
+    },
+    moreView : {
+        justifyContent              : 'center',
+    }
+
+});

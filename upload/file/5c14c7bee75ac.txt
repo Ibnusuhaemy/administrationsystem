@@ -1,0 +1,504 @@
+import React, { Component, PureComponent }     from 'react';
+import ImagePicker              from 'react-native-image-crop-picker';
+import LinearGradient           from 'react-native-linear-gradient';
+import Modal                    from 'react-native-simple-modal';
+import { 
+    View, 
+    Text,
+    TextInput,
+    StyleSheet,
+    Dimensions,
+    Image,
+    TouchableOpacity,
+    ImageBackground,
+    ScrollView
+} from 'react-native';
+
+export default class ofisCreatePost extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        backgroundId    : 0,
+        textInput       : [{id: 0, text: '', fontSize: 80}],
+        textInputArray  : [{key:0, item: null}],
+        image           : null,
+        modal           : false,
+        press           : '',
+        text            : ''
+    };
+  }
+
+  changeBackground = () => {
+
+    const backgroundId = this.state.backgroundId;
+
+    if( backgroundId == 0 || backgroundId == 1 ) {
+        
+        this.setState({
+            backgroundId    : backgroundId + 1,
+            image           : 'https://i.imgur.com/CZkQo1F.png'
+        });
+    }
+    else if( backgroundId == 2 ) {
+        
+        this.setState({
+            backgroundId    : 0,
+            image           : null
+        });
+    }
+  }
+
+  modalController = () => {
+
+    var modal = this.state.modal;
+
+    if( !modal ) {
+        this.setState({
+            modal : true
+        });
+    }
+    else if( modal ) {
+        this.setState({
+            modal : false
+        });
+    }
+  }
+
+  openGalery = () => {
+
+    ImagePicker.openPicker({
+
+        cropping    : true,
+        includeExif : true,
+
+      }).then(image => {
+
+        console.log('received image', image); 
+
+        this.setState({
+            modal : false,
+            image : image.path,
+        });
+      }).catch(e => this.setState({modal:false}));
+  }
+
+
+  openCamera = () => {
+
+    ImagePicker.openCamera({
+
+        cropping    : true,
+        includeExif : true,
+
+      }).then(image => {
+
+        console.log('received image', image); 
+
+        this.setState({
+            modal : false,
+            image : image.path,
+        });
+      }).catch(e => this.setState({modal:false}));
+  }
+
+  textInputLooper = ( id ) => {
+
+    const fontSizeMath   = this.state.textInput[id].text.length < 6 ? 40 : 10;
+
+    return(
+        <View style={S.textInputContainer} >
+            <TextInput
+                underlineColorAndroid   = 'transparent'
+                multiline               = {true}
+                onChangeText            = {
+                    (text) => {
+
+                        this.setState({text: text})
+
+                        if ( this.state.textInput[id].id == 0 ) {
+
+                            this.setState({
+                                textInput : [{id: id, text : text, fontSize: fontSizeMath}]
+                            });
+                        }
+                        else if ( this.state.textInput[id].id > 0 ) {
+
+                            this.setState({
+                                textInput : [...this.state.textInput, {id: this.state.textInput[id].id, text : text, fontSize: this.state.textInput[id].fontSize}]
+                            });
+                        }
+                    }
+                }
+                onKeyPress              = {
+                    ({nativeEvent}) => {
+
+                        
+                        if ( nativeEvent.key == 'Enter') {
+
+                            id = id + 1;
+                            
+                            this.setState({
+                                textInput : [...this.state.textInput,{id: id, text : '', fontSize: fontSizeMath}]
+                            });
+
+                            this.textInputLooper( id)
+                        }
+
+                    }
+                }
+                style                   = { [S.textInput, {fontSize: this.state.textInput[id].fontSize}] }
+                autoFocus               = { true }
+                value                   = { this.state.textInput[id].text }
+            />
+        </View>
+    )
+  }
+  
+
+  static navigationOptions = {
+      header : null
+  }
+
+  render() {
+
+    const backgroundId  = this.state.backgroundId;
+    const textInput     = this.state.textInput;
+    const fontSize      = this.state.fontSize;
+    const modal         = this.state.modal;
+    const image         = this.state.image;
+
+
+    return (
+      <View style={S.container}>
+        <View style={S.topContainer}>    
+            <ImageBackground borderRadius={20} source={{uri: image}} style={[S.topContentContainer, backgroundId == 1 && {backgroundColor: 'white'}, backgroundId == 2 && {backgroundColor: 'brown',}]}>
+                <View  style={S.headerTopContent}>
+                    <View style={[S.iconTitleHeader, modal && S.iconTitleHeader && {opacity: 0.5,}]}>
+                        <View style={S.iconHeaderContainer} >
+                            <Image  style={S.iconHeader} />
+                            {/*<Image source={{uri:'https://i.imgur.com/hSY6yF5.png'}} style={S.iconHeader} />*/}
+                        </View>
+                        <View style={S.titleHeaderContainer}>
+                            <Text style={S.bigTitle}>Remap Official Store</Text>
+                            <Text style={S.smallTitle}>remapstore</Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity onPress={this.modalController} style={S.moreHeader}>
+                        {/*<Image source={require('./../assets/images/ofis_2__post_produt_replace.png')} style={S.moreIcon} />*/}
+                        <Image source={{uri:'https://i.imgur.com/3tR3O37.png'}} style={S.moreIcon} />
+                    </TouchableOpacity>
+                </View>
+                <ScrollView justifyContent='center'>
+                    {
+                        this.textInputLooper(0)
+                    }
+                    {/*<View style={S.textInputContainer} >
+                        <TextInput
+                            underlineColorAndroid   = 'transparent'
+                            onChangeText            = {
+                                (text) => {
+
+
+
+                                    this.setState({
+                                        textInput : [{id: textInput[0].id + 1, text: text, fontSize: fontSizes}]
+                                    });
+                                }
+                            }
+                            style                   = { [S.textInput, {fontSize: textInput[0].fontSize}] }
+                            autoFocus               = { true }
+                            value                   = { textInput[0].text }
+                        />
+                    </View>*/}
+                </ScrollView>
+                <Modal
+                    open            = {this.state.modal}
+                    modalStyle      = {S.modalContainer}
+                    overlayStyle    = {{borderRadius: 20}}
+                >
+                    <View style={S.modalStyles}>
+                        <TouchableOpacity onPress={this.openCamera} style={S.modalContentContainer}>
+                            {/*<Image style={S.modalImage} source={require('./../assets/images/ofis_2__post_produt_replace.png')} />*/}
+                            <Image style={S.modalImage} source={{uri: 'https://i.imgur.com/3tR3O37.png'}} />
+                            <Text style={S.modalText}>Camera</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.openGalery} style={S.modalContentContainer}>
+                            {/*<Image style={S.modalImage} source={require('./../assets/images/ofis_2__post_product_addmore.png')} />*/}
+                            <Image style={S.modalImage} source={{uri: 'https://i.imgur.com/6pVl2mu.png'}} />
+                            <Text style={S.modalText}>Galery</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </ImageBackground>
+        </View>
+        <View style={S.bottomContainer}>
+            <View style={S.leftMenuBottom}>
+                <TouchableOpacity onPress={this.changeBackground} style={[S.backgroundColorView, backgroundId == 1 && {backgroundColor: 'white'}, backgroundId == 2 && {backgroundColor: 'brown',}]}>
+                    <ImageBackground borderRadius={9} source={{uri : image}} style={{width : 25, height: 25,}}/>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    {/*<Image source={require('./../assets/images/ofis_2__post_addphoto.png')} style={S.bottomLeftIcon} />*/}
+                    <Image source={{uri:'https://i.imgur.com/F1or3Kt.png'}} style={S.bottomLeftIcon} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    {/*<Image source={require('./../assets/images/ofis_2__post_addproduct.png')} style={S.bottomLeftIcon} />*/}
+                    <Image source={{uri:'https://i.imgur.com/r2yOI1D.png'}} style={S.bottomLeftIcon} />
+                </TouchableOpacity>
+            </View>
+            <View>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('testing', {data: this.state})} activeOpacity={0.1} style={S.viewCancelIcon}>
+                    {/*<Image source={require('./../assets/images/ofis_2__post.png')} style={S.sendIcon}/>*/}
+                    <Image source={{uri:'https://i.imgur.com/exTs0h7.png'}} style={S.sendIcon}/>
+                </TouchableOpacity>
+            </View>
+        </View>
+      </View>
+    );
+  }
+}
+
+{/*export class TextInputClass extends ofisCreatePost {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            title       : '',
+            fontSizess  : 40,
+        }
+    }
+
+    handleKeyPress = ({nativeEvent}) => {
+
+        if( nativeEvent.key == 'Enter' ) {
+    
+            var addNewTextInput = ofisCreatePost.state.textInputArray;
+    
+            this.setState({
+                textInputArray: [ ...this.state.textInputArray, addNewTextInput],
+            });
+        }
+      }
+
+    render(){
+
+        return(
+            <View style={S.textInputContainer} >
+                <TextInput
+                    underlineColorAndroid   = 'transparent'
+                    multiline               = {true}
+                    onChangeText            = {
+                        (text) => {
+
+                            fontSizes   = text.length < 6 ? 40 : 10;
+                            
+                            this.setState({
+                                fontSizess  : fontSizes,
+                                title       : text
+                            });
+
+                        }
+                    }
+                    onKeyPress              = { this.handleKeyPress }
+                    style                   = { [S.textInput, {fontSize: this.state.fontSizess}] }
+                    autoFocus               = { true }
+                    value                   = { this.state.title }
+                />
+            </View>
+        )
+    }
+
+}*/}
+
+
+const D = Dimensions.get('screen');
+const M = Math.round;
+const S = StyleSheet.create({
+
+    container : {
+        flex                        : 1,
+        backgroundColor             : '#DBDFE3',
+    },
+    topContainer : {
+        flex                        : 1,
+        backgroundColor             : '#DBDFE3',
+        padding                     : 20,
+    },
+    topContentContainer : {
+        flex                        : 1,
+        backgroundColor             : '#41658B',
+        borderRadius                : 20,
+    },
+    modalViewContainer : {
+        flex                        : 1, 
+        borderRadius                : 20,
+    },
+    headerTopContent : {        
+        backgroundColor             : 'transparent',
+        borderTopLeftRadius         : 20,
+        borderTopRightRadius        : 20,
+        flexDirection               : 'row',
+        justifyContent              : 'space-between',
+        zIndex                      : 99,
+    },
+    photoProductImageContainer : {    
+        width                       : M( (D.width * 1/1) - 40 ),
+        height                      : M( (D.width * 1/1) - 40 ),
+        borderRadius                : 20,
+    },
+    photoProduct : {    
+        width                       : M( (D.width * 1/1) - 40 ),
+        height                      : M( (D.width * 1/1) - 40 ),
+        borderRadius                : 20,
+    },
+    iconTitleHeader : {    
+        flex                        : 1,
+        flexDirection               : 'row',
+        justifyContent              : 'flex-start',
+        alignItems                  : 'flex-start',
+        paddingLeft                 : 15,
+        paddingTop                  : 15,
+    },
+    iconHeaderContainer : {   
+        width                       : 50,
+        height                      : 50,
+        borderRadius                : 20,
+        borderColor                 : 'grey',
+        borderWidth                 : 1.5,
+        backgroundColor             : 'white',
+        marginRight                 : 10,
+        justifyContent              : 'center',
+    },
+    iconHeader : {   
+        width                       : 50,
+        height                      : 50,
+        borderRadius                : 20,
+    },
+    titleHeaderContainer : {   
+        flexDirection               : 'column',
+        justifyContent              : 'flex-start',
+        alignItems                  : 'flex-start',
+    },
+    bigTitle : {   
+        color                       : 'white',
+        fontFamily                  : 'Poppins-Bold',
+        fontSize                    : 14,
+        textAlign                   : 'left',
+        maxWidth                    : M( D.width * 1 / 1.5 ),
+        maxHeight                   : 24
+    },
+    smallTitle : {   
+        color                       : 'white',
+        fontFamily                  : 'Poppins-SemiBold',
+        fontSize                    : 12,
+        textAlign                   : 'left',
+        maxWidth                    : M( D.width * 1 / 1.5 ),
+        maxHeight                   : 20
+    },
+    moreHeader : {    
+        flexDirection               : 'row',
+        justifyContent              : 'flex-end',
+        alignItems                  : 'flex-start',
+        position                    : 'relative',
+        padding                     : 20,
+        paddingRight                : 25,
+    },
+    moreIcon : {
+        tintColor                   : 'white',
+        width                       : 20,
+        height                      : 21,
+        zIndex                      : 99,
+    },
+    textInputContainer : {
+        backgroundColor             : 'transparent', 
+        zIndex                      : 98,
+    },
+    textInput : {
+        fontFamily                  : 'Poppins-Bold',
+        color                       : 'white', 
+        textAlign                   : 'center',
+        padding                     : 50,
+    },
+    bottomLeftIcon : {
+        tintColor                   : 'black',
+        width                       : 25,
+        height                      : 25,
+        marginRight                 : 25,
+        zIndex                      : 99,
+    },
+    modalContainer : {
+        flex                        : 1,
+        borderRadius                : 20,
+        backgroundColor             : 'transparent',
+        display                     : 'flex',
+        flexDirection               : 'row',
+        justifyContent              : 'center',
+        alignItems                  : 'center',
+    },
+    modalStyles : {
+        flex                        : 1,
+        borderRadius                : 20,
+        backgroundColor             : 'transparent',
+        display                     : 'flex',
+        flexDirection               : 'row',
+        justifyContent              : 'center',
+        alignItems                  : 'center',
+    },
+    modalTopContent : {
+        flex                        : 1,
+        borderRadius                : 20,
+        opacity                     : 0.5,
+        width                       : M( (D.width * 1/1) - 40 ),
+        height                      : M( (D.width * 1/1) - 40 ),
+        position                    : 'absolute',
+        backgroundColor             : 'black',
+        display                     : 'flex',
+    },
+    modalContentContainer : {
+        flex                        : 1,
+        flexDirection               : 'column',
+        alignItems                  : 'center',
+        justifyContent              : 'center',
+    },
+    modalImage : {
+        width                       : 50,
+        height                      : 51,
+    },
+    modalText : {
+        fontSize                    : 16,
+        fontFamily                  : 'Poppins-Bold',
+        color                       : 'white',
+        textAlign                   : 'left',
+        marginTop                   : 5,
+    },    
+    bottomContainer : {
+        padding                     : 15,
+        flexDirection               : 'row',
+        justifyContent              : 'space-between',
+        backgroundColor             : 'white',
+    },
+    leftMenuBottom : {
+        flexDirection               : 'row',
+        justifyContent              : 'center',
+        alignItems                  : 'center',
+    },
+    backgroundColorView : {
+        width                       : 25,
+        height                      : 25,
+        borderRadius                : 9,
+        borderWidth                 : 1,
+        borderColor                 : 'grey',
+        backgroundColor             : '#41658B',
+        marginRight                 : 25,
+    },
+    sendViewButton : {
+        justifyContent              : 'center',
+        alignItems                  : 'center',
+    },
+    sendIcon : {
+        width                       : 25,
+        height                      : 25,
+    },
+});

@@ -1,0 +1,440 @@
+
+import React, { Component } from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  ImageBackground,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  ScrollView,
+  Animated
+} from 'react-native';
+export default class App extends Component {
+    constructor(props){
+        super(props);
+        
+        this.state={
+            //arrow left
+            arrow    :{uri:'https://i.imgur.com/HHx716u.png'},
+            //arrow right
+            arrow1  : {uri:'https://i.imgur.com/m9vAbAf.png'},
+            action  :false,
+            height  :null,
+            image 	:{uri:'https://i.imgur.com/WrsullQ.png'},	
+            highlight : false,
+            members : false,
+            margin  : false,
+            content:[
+                {key:0,background:'#c49a6c',user:'Fortune Cookies',image:'https://i.imgur.com/KWspjuL.png'},
+                {key:1,background:'#8b5e3b',user:'Biscuit',image:'https://i.imgur.com/KWspjuL.png'},
+                {key:2,background:'#f7941e',user:'Choco Biskuit',image:'https://i.imgur.com/KWspjuL.png'},
+                {key:3,background:'#3a3a3c',user:'Dark Choco',image:'https://i.imgur.com/KWspjuL.png'}
+            ],
+            ScrollY : new Animated.Value(0)
+	    }
+    }
+  render() {
+    return (
+      <View style={styles.mainContainer}>
+          <StatusBar
+		  translucent
+		  backgroundColor="rgba(0, 0, 0, 0.20)"
+		  animated
+		/>
+        <ImageBackground source={this.state.image} style={styles.background}>
+            <View style={styles.overlay}/>
+            <View style={styles.header}>
+		    	<View style={styles.subHeaderLeft}>
+	                <TouchableOpacity>
+	                    <Image style = {styles.topIconBack} source = {{uri:'https://imgur.com/QicRW4N.png'}} resizeMode="contain"/>
+	                </TouchableOpacity>
+	            </View>
+	            <View style={styles.subHeaderCenter}>
+	                <Text style={styles.remapFont}>lounge</Text>
+	            </View>
+	            <View style={styles.subHeaderRight}>
+	            	<TouchableOpacity>
+	                	<Image style = {styles.topIcon} source = {{uri:'https://imgur.com/E3OiQH7.png'}} resizeMode='contain'/>
+	                </TouchableOpacity>
+	            </View>
+		    </View>
+            <ScrollView style={this.state.margin ?styles.bodyContainer1 : styles.bodyContainer} onScroll={() => this.setState({margin:true})}>
+                <View style={styles.body1}>
+                <View style={styles.overlay2}></View>
+                    <View style={styles.titleImg}>
+                        <View style={styles.midImg}>
+                            <Image  source={this.state.image} style={{width: 100, height: 100,borderRadius:30,}}></Image>
+                        </View>
+                    </View>
+                    <View style={styles.rightImg}>
+                        <Image  source={{uri:'https://imgur.com/7ho0o1Q.png'}} style={{width: 30, height: 30,borderRadius:25}} resizeMode="contain"></Image>
+                    </View>
+                    <View>
+                        <View style={styles.title}>
+                            <Text style={{fontSize:25,color:'black',fontFamily:'Poppins-Bold'}}>Cookies Squad</Text>
+                        </View>
+                        <View style={styles.txt}>
+                            <Text style={{fontSize:13,color:'black',textAlign:'center',fontFamily:'Poppins-Regular'}}>A wonderful serenity has taken possession of my entire soul,like these sweet mornings of spring which I enjoy with my whole heart</Text>
+                        </View>
+                    </View>
+                    <View style={styles.number}>
+                        <View style={styles.post}> 
+                            <Text style={{fontFamily:'Poppins-Bold',color:'#474848',fontSize:20}}>{this.state.highlight ?24 :0}</Text>
+                            <Text style={{fontFamily:'Poppins-Bold',color:'#474848'}}>Post</Text>
+                        </View>
+                        <View style={styles.member}>
+                            <Text style={{fontFamily:'Poppins-Bold',color:'#474848',fontSize:20}}>4</Text>
+                            <Text style={{fontFamily:'Poppins-Bold',color:'#474848'}}>Members</Text>
+                        </View>
+                    </View>
+                    <View style={styles.highlight}>
+                        <Text style={{fontFamily:'Poppins-Bold',color:'black',fontSize:18}}>Highlight Post</Text>
+                        <TouchableOpacity>  
+                            <Image source={{uri:'https://i.imgur.com/m9vAbAf.png'}} style={{width:10,height:15,margin:2,tintColor:'black',alignSelf:'center'}} resizeMode='stretch'/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.highlightContent} >
+                        {this.state.highlight ? 
+                        <ScrollView style={{flex:1}} horizontal={true} showsHorizontalScrollIndicator={false}>
+                            <View style={{width:110,height:110,margin:5,backgroundColor:'#676767',borderRadius:15,justifyContent:'space-around'}}>
+                                <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                    <Text style={{textAlign:'center',marginHorizontal:15,fontSize:16,color:'white'}}> I am a Label of form Post</Text>
+                                </View>
+                                <TouchableOpacity style={{justifyContent:'center',position:'absolute',backgroundColor:'black',paddingHorizontal:8,borderRadius:13,margin:5,opacity:0.6,marginLeft:65}}>
+                                    <Image source={{uri:'https://i.imgur.com/KWspjuL.png'}} style={styles.moreCoverImage} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{justifyContent:'center',alignItems:'center',position:'absolute',backgroundColor:'black',width:30,height:30,borderRadius:20,margin:5,opacity:0.6,marginTop:75}}>
+                                    <Image source={{uri:'https://imgur.com/XFXn6WT.png'}} style={styles.eventImage} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{width:110,height:110,margin:5,backgroundColor:'#3b2313',borderRadius:15,justifyContent:'space-around'}}>
+                                <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                    <Text style={{textAlign:'center',marginHorizontal:15,fontSize:16,color:'white'}}> I am a Label of form Post</Text>
+                                </View>
+                                <TouchableOpacity style={{justifyContent:'center',position:'absolute',backgroundColor:'black',paddingHorizontal:8,borderRadius:13,margin:5,opacity:0.6,marginLeft:65}}>
+                                    <Image source={{uri:'https://i.imgur.com/KWspjuL.png'}} style={styles.moreCoverImage} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{justifyContent:'center',alignItems:'center',position:'absolute',backgroundColor:'black',width:30,height:30,borderRadius:20,margin:5,opacity:0.6,marginTop:75}}>
+                                    <Image source={{uri:'https://imgur.com/PTEjmVk.png'}} style={styles.eventImage} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={{flex:1}} onPress={()=>this.setState({highlight:true})}>
+                            <ImageBackground source={{uri:'https://imgur.com/nLEbga6.png'}} style={{width:110,height:110,margin:5,alignSelf:'flex-start'}}>
+                                <Image style = {styles.images} source = {{uri:'https://imgur.com/SDR7jia.png'}} />
+                                <Text style={{fontSize:12,fontFamily:'Poppins-Bold',color:'#474848',alignSelf:'center',textAlign:'center',marginLeft:20,marginRight:20,marginTop:5}}> Highlight Post </Text>
+                            </ImageBackground>
+                        </TouchableOpacity>
+                        </ScrollView>:
+                        <TouchableOpacity style={{flex:1}} onPress={()=>this.setState({highlight:true})}>
+                            <ImageBackground source={{uri:'https://imgur.com/nLEbga6.png'}} style={{width:110,height:110,margin:5,alignSelf:'flex-start'}}>
+                                <Image style = {styles.images} source = {{uri:'https://imgur.com/SDR7jia.png'}} />
+                                <Text style={{fontSize:12,fontFamily:'Poppins-Bold',color:'#474848',alignSelf:'center',textAlign:'center',marginLeft:20,marginRight:20,marginTop:5}}> Highlight Post </Text>
+                            </ImageBackground>
+                        </TouchableOpacity>
+                        }
+                    </View>
+                    <View style={styles.members}>
+                        <Text style={{fontFamily:'Poppins-Bold',color:'black',fontSize:18}}>Members</Text>
+                        <TouchableOpacity onPress={() => this.setState({members:!this.state.members})}>  
+                            <Image source={this.state.members ? this.state.arrow : this.state.arrow1} style={styles.arrow} resizeMode='stretch'/>
+                        </TouchableOpacity>
+                    </View>
+                    {this.state.members ?  
+                        <View style={{flex:1}}> 
+                            <View style={{justifyContent:'space-around'}}>
+                                <View style={{justifyContent:'space-around',flexDirection:'row',margin:5,alignItems:'center'}}>
+                                    <TouchableOpacity>
+                                        <Image style={{width:45,height:45,marginLeft:5}} source={{uri:'https://imgur.com/zQmxqQX.png'}}/>
+                                    </TouchableOpacity>
+                                    <View style={{flex:1,marginLeft:20}}>
+                                        <Text style={{textAlign:'left',fontFamily:'Poppins-Regular'}}>Add Member ...</Text>
+                                    </View>
+                                </View>
+                        <FlatList
+                            keyExtractor={(item) => item.key.toString()}
+                            data={this.state.content}
+                            renderItem={({item}) => (
+                                <View style={{flexDirection:'row',alignItems:'center',margin:5,marginBottom:5}}>
+                                    <View style={{height:45,width:45,marginLeft:5,backgroundColor:(item.background),borderRadius:25,margin:2}}></View>
+                                    <View style={{flex:1,marginLeft:20}}>
+                                        <Text style={{textAlign:'left',fontFamily:'Poppins-Bold'}}>{item.user}</Text>
+                                    </View>
+                                    <TouchableOpacity>
+                                         <Image style={{width:25,height:25,marginRight:10}} source={{uri:(item.image)}}/>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            />
+                            
+                            </View></View>:
+                    <View style={styles.membersContent}> 
+                        <View style={{height:45,width:45,marginLeft:5,backgroundColor:'#c49a6c',borderRadius:25}}>
+                            <View style={{width:25,height:25,backgroundColor:'#808080',borderRadius:50,borderWidth:3,borderColor:'white',alignSelf:'flex-end',marginTop:21,marginLeft:25}}></View>
+                        </View>
+                        <View style={{height:45,width:45,marginLeft:5,backgroundColor:'#8b5e3b',borderRadius:25}}></View>
+                        <View style={{height:45,width:45,marginLeft:5,backgroundColor:'#f7941e',borderRadius:25}}></View>
+                        <View style={{height:45,width:45,marginLeft:5,backgroundColor:'#3a3a3c',borderRadius:25}}></View>
+                        <TouchableOpacity>
+                            <Image source={{uri:'https://imgur.com/zQmxqQX.png'}} style={[styles.gambar,{height:45,width:45,marginLeft:5,margin:10}]}></Image>
+                        </TouchableOpacity>
+                    </View>
+                    }
+                    
+                </View>
+                    
+            </ScrollView>
+            <View style={styles.footer}>
+                <View style={styles.content}>
+                <View style={styles.overlay1}/>
+                    <Image style={{width:20,height:20,margin:7,tintColor:'#808080'}} source={{uri:'https://imgur.com/1MbEC0F.png'}} resizeMode="contain"/>
+		    		<Image style={{width:20,height:20,margin:7,tintColor:'#808080'}} source={{uri:'https://imgur.com/jTb9nC9.png'}} resizeMode="contain"/>
+		    		<Image style={{width:20,height:20,margin:7,tintColor:'#808080'}} source={{uri:'https://imgur.com/SOCSiHf.png'}} resizeMode="contain"/>
+		    		<Image style={{width:20,height:20,margin:7,tintColor:'#808080'}} source={{uri:'https://imgur.com/hTmyoDD.png'}} resizeMode="contain"/>
+                    <TouchableOpacity>
+		    		    <Image style={{width:20,height:20,margin:7,tintColor:'#808080'}} source={{uri:'https://imgur.com/EE95IrN.png' }} resizeMode="contain"/>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </ImageBackground>
+      </View>
+    );
+  }
+}
+
+const dimensions    = Dimensions.get("window");
+const styles = StyleSheet.create({
+  mainContainer:{
+      flex:1,
+  },
+  background:{
+      flex:1,
+      width:null,
+      height:null
+  },
+  header:{
+      flexDirection	    : 'row',
+      justifyContent	: 'space-between',
+      padding			: 5,
+      alignSelf		    : 'center',
+      flex 			    : 0.05,
+      //position		: 'absolute',
+      marginTop		    : 20
+
+  },
+  images:{
+    alignSelf         : 'center',
+    width             : 20,
+    height            : 20,
+    marginTop         : 30,
+    tintColor         : '#474848'
+  },
+  arrow:{
+    width:10,
+    height:15,
+    margin:2,
+    tintColor:'black',
+    alignSelf:'center'
+  },
+  subHeaderLeft : {
+    flex              : 0.3,
+    alignItems		  : 'center'
+  },
+  subHeaderCenter : {
+    flex              : 1,
+    alignItems        : 'center'
+  },
+  subHeaderRight : {
+    flex              : 0.3,
+    alignItems		  : 'center'
+  },
+  topIconBack: {
+    width             : Math.round(dimensions.height * 1/40),
+    height            : Math.round(dimensions.height * 1/40),
+    //borderRadius      : 50,
+    marginLeft        : 10,
+    marginRight       : 10,
+    //marginTop         : 8,
+  },
+  topIcon: {
+    width             : Math.round(dimensions.height * 1/25),
+    height            : Math.round(dimensions.height * 1/65),
+    marginLeft		  : 10,
+    marginRight       : Math.round(dimensions.height * 1/90),
+    marginTop         : 5,
+  },
+  remapFont: {
+    color             : 'white',
+    fontFamily        : 'forced_square',
+    fontSize          : 24
+  },
+overlay: {
+	position        : 'absolute',
+	top             : 0,
+	right           : 0,
+	bottom          : 0,
+	left            : 0,
+	backgroundColor : 'black',
+	opacity         : 0.5,
+  },
+  overlay1: {
+    position        : 'absolute',
+    top             : 0,
+    right           : 0,
+    bottom          : 0,
+    left            : 0,
+    backgroundColor : 'white',
+    opacity         : 0.9,  
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10
+},
+overlay2: {
+    position        : 'absolute',
+    top             : 0,
+    right           : 0,
+    bottom          : 0,
+    left            : 0,
+    backgroundColor : 'white',
+    opacity         : 0.9,
+    borderRadius    :10
+},
+  bodyContainer:{
+    marginTop      :90,
+},
+bodyContainer1:{
+    marginTop      :25,
+},
+  body:{
+     margin         :10,
+     borderRadius   :10,
+     marginBottom   :50
+  },
+  body1:{
+    marginTop      :15,
+    margin         :10,
+    borderRadius   :10,
+    marginBottom   :70
+  },
+  titleImg:{
+      flexDirection :'row',
+      margin        :20,
+      justifyContent:'center',
+  },
+  midImg:{
+      flex          :1,
+      justifyContent:'center',
+      alignItems    :'center',
+  },
+  rightImg:{
+      flex          :0.07,
+      marginTop     :-120,
+      margin        :10,
+      justifyContent:"flex-start",
+      alignItems    :"flex-end",
+  },
+  title:{
+      alignItems    :'center',
+      marginTop     :90,
+      
+  },
+  txt:{
+      marginTop     :5,
+      alignItems    :'center',
+      justifyContent:'center',
+      marginLeft    :40,
+      marginRight   :40
+  },
+  number:{
+      flexDirection :'row',
+      justifyContent:'space-around',
+      marginVertical     :15
+  },
+  moreCoverView : {
+    paddingHorizontal   : 8,
+    backgroundColor     : 'black',
+    borderRadius        : 15,
+    alignSelf           : 'flex-end',
+    opacity             : 0.7,
+    position            : 'absolute',
+    margin              : 5,
+    marginRight         :5,
+    },
+    moreCoverImage : {
+        tintColor       : 'white',
+        width           : 25,
+        height          : 25,       
+    },
+    eventImage : {
+        tintColor       : 'white',
+        width           : 15,
+        height          : 15,       
+    },
+    moreCoverImage1 : {
+        tintColor       : 'white',
+        width           : 10,
+        height          : 10,       
+    },
+  post:{
+      flex          :1,
+      alignItems    :'center',
+      marginLeft    :20,
+      height        :35,
+      justifyContent:'space-around'
+  },
+  member:{
+      flex          :1,
+      alignItems    :'center',
+      marginRight   :20,
+      height        :35,
+      justifyContent:'space-around'
+  },
+  highlight:{
+      flexDirection :'row',
+      marginTop     :10,
+      marginLeft    :15,
+      marginRight   :15,
+      justifyContent:'space-between',
+  },
+  highlightContent:{
+      flexDirection :'row',
+      justifyContent:'space-around',
+      margin        :5,                                                                                                                                                                                                                    
+  },
+  members:{
+    flexDirection   :'row',
+    marginTop       :5,
+    marginHorizontal:15,
+    marginTop       :20,
+    justifyContent  :'space-between',
+  },
+  membersContent:{
+    flexDirection   :'row',
+    margin          :2,
+    flex            :1,
+    justifyContent  :'flex-start',
+    alignItems      :'center',
+    marginBottom    : 10
+    //backgroundColor:'red'
+  },
+  footer:{
+      height        :55,
+      position      : 'absolute',
+      bottom        :0,
+      width         :Math.round(dimensions.width * 1/1),
+      //backgroundColor:'black'
+  },
+  content:{
+      flex          :1,
+      marginHorizontal:10,
+      flexDirection :'row',
+      justifyContent:'space-around',
+      alignItems    :'center',
+      //backgroundColor:'white',
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10
+  }
+});
